@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeMaster - Modern Typing Game</title>
+    <style>
+        :root {
+            --bg-color: #1e1e2e;
+            --text-color: #cdd6f4;
+            --sub-color: #7f849c;
+            --correct-color: #a6e3a1;
+            --incorrect-color: #f38ba8;
+            --accent-color: #cba6f7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #252538;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #313244;
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            font-size: 28px;
+        }
+
+        /* Instructions Styling */
+        .instructions-box {
+            background: #181825;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .instructions-box h3 {
+            margin-bottom: 5px;
+            color: var(--accent-color);
+        }
+
+        .instructions-box ul {
+            list-style-position: inside;
+            color: var(--sub-color);
+            font-size: 14px;
+        }
+
+        /* Controls styling */
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        select, button {
+            background: #313244;
+            color: var(--text-color);
+            border: 1px solid #45475a;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        select:focus, button:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        button:hover {
+            background: var(--accent-color);
+            color: #1e1e2e;
+            font-weight: bold;
+        }
+
+        /* Stats Dashboard */
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            background: #181825;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 18px;
+        }
+
+        .stat-box span {
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 22px;
+        }
+
+        /* Game Core Area */
+        .word-display {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 32px;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 25px;
+            min-height: 50px;
+            word-wrap: break-word;
+        }
+
+        .char {
+            color: var(--sub-color);
+            border-bottom: 2px solid transparent;
+        }
+
+        .char.correct {
+            color: var(--correct-color);
+        }
+
+        .char.incorrect {
+            color: var(--incorrect-color);
+            background: rgba(243, 139, 168, 0.1);
+            border-radius: 3px;
+        }
+
+        .char.current {
+            border-bottom: 2px solid var(--accent-color);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background: #313244;
+            border: 2px solid #45475a;
+            color: var(--text-color);
+            border-radius: 8px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .input-field:disabled {
+            background: #181825;
+            cursor: not-allowed;
+            placeholder-color: #585b70;
+        }
+
+        /* Result Modal/Section */
+        .result-box {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(166, 227, 161, 0.1);
+            border: 1px solid var(--correct-color);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>⌨️ TypeMaster Pro</h1>
+        <div class="controls">
+            <label for="level-select">Level:</label>
+            <select id="level-select">
+                <option value="easy">Easy (Aasan)</option>
+                <option value="medium" selected>Medium (Madhyam)</option>
+                <option value="hard">Hard (Kathin)</option>
+            </select>
+            <button id="start-btn">Start Game</button>
+        </div>
+    </header>
+
+    <div class="instructions-box">
+        <h3>💡 Typing Kaise Karein? (Instructions)</h3>
+        <ul>
+            <li>Apna Level chuniye (Easy, Medium, ya Hard) aur <b>Start Game</b> par click kijiye.</li>
+            <li>Upar screen par jo word dikhega, use niche diye gaye box mein type karna shuru karein.</li>
+            <li>Sahi letter type karne par rang <span style="color: var(--correct-color); font-weight:bold;">Green (Hara)</span> ho jayega.</li>
+            <li>Galat letter hone par rang <span style="color: var(--incorrect-color); font-weight:bold;">Red (Lal)</span> ho jayega.</li>
+            <li>Jaise hi aap ek word poora sahi type karenge, agla word apne aap aa jayega.</li>
+            <li>Aapke paas har game ke liye <b>30 Seconds</b> ka samay hoga.</li>
+        </ul>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box">Timer: <span id="timer">30</span>s</div>
+        <div class="stat-box">Live WPM: <span id="wpm">0</span></div>
+        <div class="stat-box">Accuracy: <span id="accuracy">100</span>%</div>
+    </div>
+
+    <div class="word-display" id="word-screen">Yahan Word Dikhai Dega</div>
+
+    <input type="text" id="typing-input" class="input-field" placeholder="Game shuru karne ke liye upar 'Start Game' dabayein..." disabled autocomplete="off">
+
+    <div class="result-box" id="result-screen">
+        <h2>🎉 Game Over!</h2>
+        <p style="margin: 10px 0;">Aapki Final Speed: <span id="final-wpm" style="font-weight:bold; color:var(--accent-color); font-size:24px;">0</span> WPM (Words Per Minute)</p>
+        <p>Accuracy: <span id="final-accuracy" style="font-weight:bold;">100</span>%</p>
+    </div>
+</div>
+
+<script>
+    // Word Lists for different levels
+    const wordBank = {
+        easy: ["cat", "dog", "sun", "book", "tree", "fish", "ball", "home", "king", "milk", "door", "hand", "jump", "play", "star", "city", "road", "love", "hope", "mind"],
+        medium: ["computer", "keyboard", "language", "internet", "database", "software", "solution", "graphics", "security", "notebook", "learning", "creative", "document", "function", "variable"],
+        hard: ["asynchronous", "cryptography", "synchronization", "unbelievable", "encapsulation", "infrastructure", "troubleshooting", "authentication", "implementation", "institutionalization"]
+    };
+
+    // Game Variables
+    let currentWord = "";
+    let timeLimit = 30;
+    let timeLeft = timeLimit;
+    let timerInterval = null;
+    let isPlaying = false;
+    let totalKeystrokes = 0;
+    let correctKeystrokes = 0;
+    let wordCount = 0;
+
+    // DOM Elements
+    const wordScreen = document.getElementById('word-screen');
+    const typingInput = document.getElementById('typing-input');
+    const startBtn = document.getElementById('start-btn');
+    const levelSelect = document.getElementById('level-select');
+    const timerDisplay = document.getElementById('timer');
+    const wpmDisplay = document.getElementById('wpm');
+    const accuracyDisplay = document.getElementById('accuracy');
+    const resultScreen = document.getElementById('result-screen');
+    const finalWpm = document.getElementById('final-wpm');
+    const finalAccuracy = document.getElementById('final-accuracy');
+
+    // Init/Setup Word Display with Spans
+    function setNextWord() {
+        const level = levelSelect.value;
+        const words = wordBank[level];
+        const randomIndex = Math.floor(Math.random() * words.length);
+        currentWord = words[randomIndex];
+        
+        // Wrap each character in a span tag for separate coloring
+        wordScreen.innerHTML = currentWord.split('').map((char, index) => {
+            return `<span class="char ${index === 0 ? 'current' : ''}">${char}</span>`;
+        }).join('');
+        
+        typingInput.value = "";
+    }
+
+    // Start the Game
+    function startGame() {
+        if (isPlaying) return;
+        
+        // Reset variables
+        isPlaying = true;
+        timeLeft = timeLimit;
+        totalKeystrokes = 0;
+        correctKeystrokes = 0;
+        wordCount = 0;
+        
+        timerDisplay.textContent = timeLeft;
+        wpmDisplay.textContent = 0;
+        accuracyDisplay.textContent = 100;
+        
+        resultScreen.style.display = "none";
+        typingInput.disabled = false;
+        typingInput.placeholder = "Type karna shuru karein...";
+        typingInput.focus();
+        
+        setNextWord();
+        
+        // Start Timer Countdown
+        startBtn.textContent = "Reset Game";
+        clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    // Timer logic
+    function updateTimer() {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        
+        // Calculate WPM live
+        if(totalKeystrokes > 0) {
+            let timeElapsedMins = (timeLimit - timeLeft) / 60;
+            // Standard Formula: (Correct characters / 5) / Time in minutes
+            let currentWpm = Math.round((correctKeystrokes / 5) / timeElapsedMins);
+            wpmDisplay.textContent = currentWpm > 0 ? currentWpm : 0;
+        }
+
+        if (timeLeft <= 0) {
+            endGame();
+        }
+    }
+
+    // End the Game
+    function endGame() {
+        clearInterval(timerInterval);
+        isPlaying = false;
+        typingInput.disabled = true;
+        typingInput.value = "";
+        typingInput.placeholder = "Game Over! Dobara khelne ke liye Start dabayein.";
+        startBtn.textContent = "Start Game";
+        
+        // Final Stats Calculation
+        let finalTimeMins = timeLimit / 60;
+        let scoreWpm = Math.round((correctKeystrokes / 5) / finalTimeMins);
+        let finalAcc = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
+        
+        finalWpm.textContent = scoreWpm;
+        finalAccuracy.textContent = finalAcc + "%";
+        resultScreen.style.display = "block";
+    }
+
+    // Input Typing Handler
+    typingInput.addEventListener('input', () => {
+        if (!isPlaying) return;
+
+        const inputVal = typingInput.value;
+        const charSpans = wordScreen.querySelectorAll('.char');
+        totalKeystrokes++;
+
+        let isAllCorrectSoFar = true;
+
+        charSpans.forEach((span, index) => {
+            const expectedChar = span.textContent;
+            const typedChar = inputVal[index];
+
+            // Clean active states
+            span.classList.remove('correct', 'incorrect', 'current');
+
+            if (typedChar == null) {
+                // Not typed yet
+                if (isAllCorrectSoFar) {
+                    span.classList.add('current');
+                    isAllCorrectSoFar = false; // Next chars won't be 'current'
+                }
+            } else if (typedChar === expectedChar) {
+                span.classList.add('correct');
+                if(index === inputVal.length - 1) correctKeystrokes++; // Add to score if it's the fresh input
+            } else {
+                span.classList.add('incorrect');
+                isAllCorrectSoFar = false;
+            }
+        });
+
+        // Live accuracy check
+        let liveAcc = Math.round((correctKeystrokes / totalKeystrokes) * 100);
+        accuracyDisplay.textContent = liveAcc > 0 ? liveAcc : 100;
+
+        // If whole word is typed correctly
+        if (inputVal === currentWord) {
+            wordCount++;
+            setNextWord();
+        }
+    });
+
+    // Reset game if Level changes
+    levelSelect.addEventListener('change', () => {
+        if(isPlaying) {
+            endGame();
+        }
+        wordScreen.textContent = "Level badla gaya. Start Game par click karein.";
+    });
+
+    // Button trigger
+    startBtn.addEventListener('click', () => {
+        if(startBtn.textContent === "Reset Game") {
+            endGame();
+        } else {
+            startGame();
+        }
+    });
+</script>
+
+</body>
+</html>
