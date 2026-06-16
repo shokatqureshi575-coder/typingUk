@@ -3,410 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TypeMaster - Modern Typing Game</title>
+    <title>Islamic Artistic Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;600&family=Rozha+One&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #1e1e2e;
-            --text-color: #cdd6f4;
-            --sub-color: #7f849c;
-            --correct-color: #a6e3a1;
-            --incorrect-color: #f38ba8;
-            --accent-color: #cba6f7;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            width: 100%;
-            background: #252538;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        header {
-            display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #313244;
-            padding-bottom: 15px;
+            overflow-x: hidden;
+            perspective: 1000px;
         }
 
-        h1 {
-            color: var(--accent-color);
-            font-size: 28px;
+        /* Artistic Background Elements */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
         }
 
-        /* Instructions Styling */
-        .instructions-box {
-            background: #181825;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border-left: 4px solid var(--accent-color);
+        /* Header / 3D Allah Animation */
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
         }
 
-        .instructions-box h3 {
-            margin-bottom: 5px;
-            color: var(--accent-color);
+        .allah-container {
+            display: inline-block;
+            perspective: 1000px;
         }
 
-        .instructions-box ul {
-            list-style-position: inside;
-            color: var(--sub-color);
-            font-size: 14px;
-        }
-
-        /* Controls styling */
-        .controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        select, button {
-            background: #313244;
-            color: var(--text-color);
-            border: 1px solid #45475a;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        select:focus, button:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-
-        button:hover {
-            background: var(--accent-color);
-            color: #1e1e2e;
+        .allah-title {
+            font-family: 'Amiri', serif;
+            font-size: 75px;
             font-weight: bold;
+            color: #ffd700;
+            cursor: pointer;
+            text-shadow: 
+                0 1px 0 #b89700, 0 2px 0 #a38500, 0 3px 0 #8f7400, 0 4px 0 #7a6300,
+                0 5px 0 #665200, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1),
+                0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 
+                0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 
+                0 20px 20px rgba(0,0,0,.15);
+            animation: float3D 4s ease-in-out infinite alternate;
+            transform-style: preserve-3d;
         }
 
-        /* Stats Dashboard */
-        .stats-container {
+        @keyframes float3D {
+            0% {
+                transform: translateY(0) rotateY(-15deg) rotateX(10deg);
+            }
+            100% {
+                transform: translateY(-15px) rotateY(15deg) rotateX(-10deg);
+            }
+        }
+
+        /* 3D Decorative Scene Area */
+        .decoration-container {
             display: flex;
             justify-content: space-around;
-            background: #181825;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            font-size: 18px;
-        }
-
-        .stat-box span {
-            font-weight: bold;
-            color: var(--accent-color);
-            font-size: 22px;
-        }
-
-        /* Game Core Area */
-        .word-display {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 32px;
-            letter-spacing: 2px;
-            text-align: center;
-            margin-bottom: 25px;
-            min-height: 50px;
-            word-wrap: break-word;
-        }
-
-        .char {
-            color: var(--sub-color);
-            border-bottom: 2px solid transparent;
-        }
-
-        .char.correct {
-            color: var(--correct-color);
-        }
-
-        .char.incorrect {
-            color: var(--incorrect-color);
-            background: rgba(243, 139, 168, 0.1);
-            border-radius: 3px;
-        }
-
-        .char.current {
-            border-bottom: 2px solid var(--accent-color);
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            50% { border-color: transparent; }
-        }
-
-        .input-field {
+            align-items: center;
             width: 100%;
-            padding: 15px;
-            font-size: 18px;
-            background: #313244;
-            border: 2px solid #45475a;
-            color: var(--text-color);
-            border-radius: 8px;
-            text-align: center;
-            transition: 0.3s;
+            max-width: 1200px;
+            margin: 20px auto;
+            position: relative;
         }
 
-        .input-field:focus {
-            outline: none;
-            border-color: var(--accent-color);
+        /* 3D Lantern (Lalten) */
+        .lantern-3d {
+            width: 100px;
+            height: 180px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateLantern 8s linear infinite;
         }
 
-        .input-field:disabled {
-            background: #181825;
-            cursor: not-allowed;
-            placeholder-color: #585b70;
+        @keyframes rotateLantern {
+            0% { transform: rotateY(0deg) translateY(0); }
+            50% { transform: rotateY(180deg) translateY(-5px); }
+            100% { transform: rotateY(360deg) translateY(0); }
         }
 
-        /* Result Modal/Section */
-        .result-box {
+        .lantern-shape {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #d4af37, #aa7c11);
+            clip-path: polygon(30% 0%, 70% 0%, 100% 25%, 85% 75%, 65% 100%, 35% 100%, 15% 75%, 0% 25%);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lantern-glow {
+            width: 40px;
+            height: 70px;
+            background: radial-gradient(circle, #fff 10%, #ffae00 60%, transparent 100%);
+            border-radius: 50%;
+            animation: pulseGlow 2s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            100% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 25px #ffae00; }
+        }
+
+        /* 3D Flower */
+        .flower-3d {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: spinFlower 12s linear infinite;
+        }
+
+        @keyframes spinFlower {
+            0% { transform: rotateX(45deg) rotateY(0deg); }
+            100% { transform: rotateX(45deg) rotateY(360deg); }
+        }
+
+        .center-bud {
+            position: absolute;
+            top: 45px; left: 45px;
+            width: 30px; height: 30px;
+            background: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ffd700;
+            transform: translateZ(15px);
+        }
+
+        .petal {
+            position: absolute;
+            top: 10px; left: 45px;
+            width: 30px; height: 50px;
+            background: linear-gradient(to top, #d4af37, #f3e5ab);
+            border-radius: 50% 50% 0 0;
+            transform-origin: bottom center;
+        }
+
+        .petal:nth-child(1) { transform: rotateZ(0deg) rotateX(20deg); }
+        .petal:nth-child(2) { transform: rotateZ(60deg) rotateX(20deg); }
+        .petal:nth-child(3) { transform: rotateZ(120deg) rotateX(20deg); }
+        .petal:nth-child(4) { transform: rotateZ(180deg) rotateX(20deg); }
+        .petal:nth-child(5) { transform: rotateZ(240deg) rotateX(20deg); }
+        .petal:nth-child(6) { transform: rotateZ(300deg) rotateX(20deg); }
+
+        /* Main Content Layout */
+        .main-container {
+            width: 90%;
+            max-width: 850px;
+            background: rgba(15, 32, 39, 0.75);
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+            transition: all 0.5s ease;
+        }
+
+        .page-content {
             display: none;
+            animation: fadeIn 0.6s ease-in-out forwards;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography Styles */
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            font-size: 32px;
+            direction: rtl;
+            line-height: 2.2;
             text-align: center;
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(166, 227, 161, 0.1);
-            border: 1px solid var(--correct-color);
-            border-radius: 8px;
+            color: #f3e5ab;
+            margin-bottom: 25px;
+            border-bottom: 1px dashed rgba(214, 175, 55, 0.3);
+            padding-bottom: 20px;
+        }
+
+        .hindi-text {
+            font-family: 'Rozha One', 'Poppins', sans-serif;
+            font-size: 18px;
+            line-height: 1.8;
+            text-align: center;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        /* Audio Button Styling */
+        .audio-control-box {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .audio-btn {
+            background: linear-gradient(45deg, #d4af37, #aa7c11);
+            color: #0f2027;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .audio-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(45deg, #ffe066, #d4af37);
+        }
+
+        /* Pagination Style */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .page-num {
+            width: 45px;
+            height: 45px;
+            border: 1px solid #d4af37;
+            background: transparent;
+            color: #d4af37;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-num.active, .page-num:hover {
+            background: #d4af37;
+            color: #0f2027;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
         }
     </style>
 </head>
 <body>
 
-<div class="container">
     <header>
-        <h1>⌨️ TypeMaster Pro</h1>
-        <div class="controls">
-            <label for="level-select">Level:</label>
-            <select id="level-select">
-                <option value="easy">Easy (Aasan)</option>
-                <option value="medium" selected>Medium (Madhyam)</option>
-                <option value="hard">Hard (Kathin)</option>
-            </select>
-            <button id="start-btn">Start Game</button>
+        <div class="allah-container">
+            <div class="allah-title">الله</div>
         </div>
     </header>
 
-    <div class="instructions-box">
-        <h3>💡 Typing Kaise Karein? (Instructions)</h3>
-        <ul>
-            <li>Apna Level chuniye (Easy, Medium, ya Hard) aur <b>Start Game</b> par click kijiye.</li>
-            <li>Upar screen par jo word dikhega, use niche diye gaye box mein type karna shuru karein.</li>
-            <li>Sahi letter type karne par rang <span style="color: var(--correct-color); font-weight:bold;">Green (Hara)</span> ho jayega.</li>
-            <li>Galat letter hone par rang <span style="color: var(--incorrect-color); font-weight:bold;">Red (Lal)</span> ho jayega.</li>
-            <li>Jaise hi aap ek word poora sahi type karenge, agla word apne aap aa jayega.</li>
-            <li>Aapke paas har game ke liye <b>30 Seconds</b> ka samay hoga.</li>
-        </ul>
+    <div class="decoration-container">
+        <div class="lantern-3d">
+            <div class="lantern-shape">
+                <div class="lantern-glow"></div>
+            </div>
+        </div>
+
+        <div class="flower-3d">
+            <div class="center-bud"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+        </div>
     </div>
 
-    <div class="stats-container">
-        <div class="stat-box">Timer: <span id="timer">30</span>s</div>
-        <div class="stat-box">Live WPM: <span id="wpm">0</span></div>
-        <div class="stat-box">Accuracy: <span id="accuracy">100</span>%</div>
+    <div class="main-container">
+        <div id="page-1" class="page-content active">
+            <div class="arabic-text">
+                أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ।<br>
+                اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْफَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِم| وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ mِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُहُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ।
+            </div>
+            <div class="hindi-text">
+                अऊज़ु बिल्लाही मिनश-शैतानिर-रजीम।<br><br>
+                अल्लाहु ला इलाहा इल्ला हु अल-हय्युल-क़य्यूम। ला तअ खुज़ुहु सिन्नतून वला नौम। लहु मा फिस-समावाती व मा फिल-अर्द। मन ज़ल्लज़ी यशफ़अु इंदहु इल्ला बि-इज़्निही। यअलमु मा बैना अयदीहिम व मा खल्फहुम। वा ला युहीतूना बि-शैइम मिन 'इल्मिही इल्ला बि-मा शा अ'। वसिअ कुर्सिय्युहु-स-समावाती वल-अर्द। वा ला यआउduहु हिफ़्ज़ुहुमा, वहुल-'अलीयुल-'अज़ीम।
+            </div>
+        </div>
+
+        <div id="page-2" class="page-content">
+            <div class="arabic-text" style="font-size: 26px;">فَضْلُ آيَةِ الْكُرْسِيِّ</div>
+            <div class="hindi-text">
+                यह आयत अल-कुर्सी (Ayat al-Kursi) है, जो सूरह अल-बकराह की आयत नंबर 255 है। यह पवित्र कुरान की सबसे महान और शक्तिशाली आयतों में से एक मानी जाती है। इसमें अल्लाह की संप्रभुता, ज्ञान और असीम शक्ति का अत्यंत सुंदर और कलात्मक वर्णन है। नियमित रूप से इसका पाठ करने से सुरक्षा और आत्मिक शांति प्राप्त होती है।
+            </div>
+        </div>
+
+        <div class="audio-control-box">
+            <button class="audio-btn" onclick="toggleAudio()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                <span id="btn-text">Dua Sunein (Play Audio)</span>
+            </button>
+        </div>
     </div>
 
-    <div class="word-display" id="word-screen">Yahan Word Dikhai Dega</div>
-
-    <input type="text" id="typing-input" class="input-field" placeholder="Game shuru karne ke liye upar 'Start Game' dabayein..." disabled autocomplete="off">
-
-    <div class="result-box" id="result-screen">
-        <h2>🎉 Game Over!</h2>
-        <p style="margin: 10px 0;">Aapki Final Speed: <span id="final-wpm" style="font-weight:bold; color:var(--accent-color); font-size:24px;">0</span> WPM (Words Per Minute)</p>
-        <p>Accuracy: <span id="final-accuracy" style="font-weight:bold;">100</span>%</p>
+    <div class="pagination">
+        <button class="page-num active" onclick="changePage(1, event)">1</button>
+        <button class="page-num" onclick="changePage(2, event)">2</button>
     </div>
-</div>
 
-<script>
-    // Word Lists for different levels
-    const wordBank = {
-        easy: ["cat", "dog", "sun", "book", "tree", "fish", "ball", "home", "king", "milk", "door", "hand", "jump", "play", "star", "city", "road", "love", "hope", "mind"],
-        medium: ["computer", "keyboard", "language", "internet", "database", "software", "solution", "graphics", "security", "notebook", "learning", "creative", "document", "function", "variable"],
-        hard: ["asynchronous", "cryptography", "synchronization", "unbelievable", "encapsulation", "infrastructure", "troubleshooting", "authentication", "implementation", "institutionalization"]
-    };
+    <script>
+        // Custom Audio Object pointing to your file
+        let myAudio = new Audio('dua.mp3'); 
+        let isPlaying = false;
 
-    // Game Variables
-    let currentWord = "";
-    let timeLimit = 30;
-    let timeLeft = timeLimit;
-    let timerInterval = null;
-    let isPlaying = false;
-    let totalKeystrokes = 0;
-    let correctKeystrokes = 0;
-    let wordCount = 0;
+        function changePage(pageNum, event) {
+            // Stop audio if running when page changes
+            stopAudio();
 
-    // DOM Elements
-    const wordScreen = document.getElementById('word-screen');
-    const typingInput = document.getElementById('typing-input');
-    const startBtn = document.getElementById('start-btn');
-    const levelSelect = document.getElementById('level-select');
-    const timerDisplay = document.getElementById('timer');
-    const wpmDisplay = document.getElementById('wpm');
-    const accuracyDisplay = document.getElementById('accuracy');
-    const resultScreen = document.getElementById('result-screen');
-    const finalWpm = document.getElementById('final-wpm');
-    const finalAccuracy = document.getElementById('final-accuracy');
+            document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-' + pageNum).classList.add('active');
 
-    // Init/Setup Word Display with Spans
-    function setNextWord() {
-        const level = levelSelect.value;
-        const words = wordBank[level];
-        const randomIndex = Math.floor(Math.random() * words.length);
-        currentWord = words[randomIndex];
-        
-        // Wrap each character in a span tag for separate coloring
-        wordScreen.innerHTML = currentWord.split('').map((char, index) => {
-            return `<span class="char ${index === 0 ? 'current' : ''}">${char}</span>`;
-        }).join('');
-        
-        typingInput.value = "";
-    }
-
-    // Start the Game
-    function startGame() {
-        if (isPlaying) return;
-        
-        // Reset variables
-        isPlaying = true;
-        timeLeft = timeLimit;
-        totalKeystrokes = 0;
-        correctKeystrokes = 0;
-        wordCount = 0;
-        
-        timerDisplay.textContent = timeLeft;
-        wpmDisplay.textContent = 0;
-        accuracyDisplay.textContent = 100;
-        
-        resultScreen.style.display = "none";
-        typingInput.disabled = false;
-        typingInput.placeholder = "Type karna shuru karein...";
-        typingInput.focus();
-        
-        setNextWord();
-        
-        // Start Timer Countdown
-        startBtn.textContent = "Reset Game";
-        clearInterval(timerInterval);
-        timerInterval = setInterval(updateTimer, 1000);
-    }
-
-    // Timer logic
-    function updateTimer() {
-        timeLeft--;
-        timerDisplay.textContent = timeLeft;
-        
-        // Calculate WPM live
-        if(totalKeystrokes > 0) {
-            let timeElapsedMins = (timeLimit - timeLeft) / 60;
-            // Standard Formula: (Correct characters / 5) / Time in minutes
-            let currentWpm = Math.round((correctKeystrokes / 5) / timeElapsedMins);
-            wpmDisplay.textContent = currentWpm > 0 ? currentWpm : 0;
+            document.querySelectorAll('.page-num').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
         }
 
-        if (timeLeft <= 0) {
-            endGame();
-        }
-    }
-
-    // End the Game
-    function endGame() {
-        clearInterval(timerInterval);
-        isPlaying = false;
-        typingInput.disabled = true;
-        typingInput.value = "";
-        typingInput.placeholder = "Game Over! Dobara khelne ke liye Start dabayein.";
-        startBtn.textContent = "Start Game";
-        
-        // Final Stats Calculation
-        let finalTimeMins = timeLimit / 60;
-        let scoreWpm = Math.round((correctKeystrokes / 5) / finalTimeMins);
-        let finalAcc = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
-        
-        finalWpm.textContent = scoreWpm;
-        finalAccuracy.textContent = finalAcc + "%";
-        resultScreen.style.display = "block";
-    }
-
-    // Input Typing Handler
-    typingInput.addEventListener('input', () => {
-        if (!isPlaying) return;
-
-        const inputVal = typingInput.value;
-        const charSpans = wordScreen.querySelectorAll('.char');
-        totalKeystrokes++;
-
-        let isAllCorrectSoFar = true;
-
-        charSpans.forEach((span, index) => {
-            const expectedChar = span.textContent;
-            const typedChar = inputVal[index];
-
-            // Clean active states
-            span.classList.remove('correct', 'incorrect', 'current');
-
-            if (typedChar == null) {
-                // Not typed yet
-                if (isAllCorrectSoFar) {
-                    span.classList.add('current');
-                    isAllCorrectSoFar = false; // Next chars won't be 'current'
-                }
-            } else if (typedChar === expectedChar) {
-                span.classList.add('correct');
-                if(index === inputVal.length - 1) correctKeystrokes++; // Add to score if it's the fresh input
+        function toggleAudio() {
+            const btnText = document.getElementById('btn-text');
+            
+            if (isPlaying) {
+                stopAudio();
             } else {
-                span.classList.add('incorrect');
-                isAllCorrectSoFar = false;
+                // Play audio track
+                myAudio.play().then(() => {
+                    isPlaying = true;
+                    btnText.innerText = "Stop Audio";
+                }).catch(error => {
+                    alert("Error: 'dua.mp3' file nahi mili! Kripya check karein ki audio file ka naam 'dua.mp3' hai aur wo isi HTML file wale folder me save hai.");
+                    console.log(error);
+                });
             }
-        });
-
-        // Live accuracy check
-        let liveAcc = Math.round((correctKeystrokes / totalKeystrokes) * 100);
-        accuracyDisplay.textContent = liveAcc > 0 ? liveAcc : 100;
-
-        // If whole word is typed correctly
-        if (inputVal === currentWord) {
-            wordCount++;
-            setNextWord();
         }
-    });
 
-    // Reset game if Level changes
-    levelSelect.addEventListener('change', () => {
-        if(isPlaying) {
-            endGame();
+        function stopAudio() {
+            myAudio.pause();
+            myAudio.currentTime = 0; // Rewind to start
+            isPlaying = false;
+            document.getElementById('btn-text').innerText = "Dua Sunein (Play Audio)";
         }
-        wordScreen.textContent = "Level badla gaya. Start Game par click karein.";
-    });
 
-    // Button trigger
-    startBtn.addEventListener('click', () => {
-        if(startBtn.textContent === "Reset Game") {
-            endGame();
-        } else {
-            startGame();
-        }
-    });
-</script>
-
+        // When audio ends naturally, reset button state
+        myAudio.onended = function() {
+            isPlaying = false;
+            document.getElementById('btn-text').innerText = "Dua Sunein (Play Audio)";
+        };
+    </script>
 </body>
 </html>
